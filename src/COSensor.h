@@ -7,12 +7,13 @@
 class COSensor {
     private:
         bool checkSum();
-        char *sendData(char *comm);
+        void sendData(char *comm);
         char *_res = NULL;
     public:
         COSensor();
         void init(int txPin, int rxPin, int baudrate, int uart_number);
         float getConcentration();
+        void switchToQAMode();
         ~COSensor();
 };
 

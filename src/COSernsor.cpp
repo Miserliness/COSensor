@@ -1,5 +1,6 @@
 #include "uartIDF.h"
 #include "COSensor.h"
+#include <Arduino.h>
 
 /* UART */
 int uart_num = UART_NUM_2;
@@ -18,7 +19,7 @@ void COSensor::init(int txPin, int rxPin, int baudrate, int uart_number)
   uartDevice.uartInitDevice(txPin, rxPin, 9600, uart_num, UART_DATA_8_BITS, UART_STOP_BITS_1);
 }
 
-char *COSensor::sendData(char *comm)
+void COSensor::sendData(char *comm)
 {
   uartDevice.write(comm, 9);
   _res = uartDevice.read();
@@ -26,24 +27,18 @@ char *COSensor::sendData(char *comm)
 
 bool COSensor::checkSum()
 {
-  // unsigned char j;
-  // unsigned char sRCalc=0;
-  // for(j=0;j<7;j++)
-  // {
-  // sRCalc+=_res[j];
-
-  // }
-  // sRCalc=(~sRCalc)+1;
-  // unsigned char sRCom = _res[8];
-  // printf("%i %i", sRCalc, sRCom);
-  if (true)
+  char sRCalc = 0;
+  for (int j = 0; j < 8; j++)
+  {
+    sRCalc += _res[j];
+  }
+  sRCalc = (~sRCalc);
+  char sRCom = _res[8];
+  if (sRCom == sRCalc)
   {
     return true;
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 float COSensor::getConcentration()
@@ -52,7 +47,7 @@ float COSensor::getConcentration()
   float conc = 0;
   if (_res != NULL && checkSum())
   {
-    
+
     unsigned int highB = _res[2];
     unsigned int lowB = _res[3];
     highB *= 256;
@@ -60,4 +55,9 @@ float COSensor::getConcentration()
     return conc;
   }
   return -255;
+}
+
+void COSensor::switchToQAMode()
+{
+  sendData(switchToQAModeCommand);
 }

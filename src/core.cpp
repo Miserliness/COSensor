@@ -25,6 +25,8 @@ void setup()
   Serial.begin(115200);
   coSensor.init(17, 16, 9600, 2);
   delay(1000);
+  coSensor.switchToQAMode(); //Command to swith sensor to QA mode
+  delay(500);
 }
 
 void loop()
