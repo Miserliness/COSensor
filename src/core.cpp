@@ -23,9 +23,8 @@ COSensor coSensor;
 void setup()
 {
   Serial.begin(115200);
-  coSensor.init(17, 16, 9600, 2);
+  coSensor.init(17, 16, 9600, 2, 10000);
   delay(1000);
-  coSensor.switchToQAMode(); //Command to swith sensor to QA mode
   delay(500);
 }
 
@@ -33,5 +32,5 @@ void loop()
 {
   float conc = coSensor.getConcentration();
   Serial.println(conc, 1);
-  delay(1000);
+  delay(1500);
 }

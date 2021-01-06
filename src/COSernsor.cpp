@@ -1,5 +1,6 @@
 #include "uartIDF.h"
 #include "COSensor.h"
+
 #include <Arduino.h>
 
 /* UART */
@@ -14,9 +15,20 @@ COSensor::COSensor(){};
 
 COSensor::~COSensor(){};
 
-void COSensor::init(int txPin, int rxPin, int baudrate, int uart_number)
+void COSensor::init(int txPin, int rxPin, int baudrate, int uart_number, int timeout)
 {
   uartDevice.uartInitDevice(txPin, rxPin, 9600, uart_num, UART_DATA_8_BITS, UART_STOP_BITS_1);
+  long time = esp_timer_get_time() / 1000;
+  while (esp_timer_get_time() / 1000 - time < timeout)
+  {
+    _res = uartDevice.read();
+    if (_res != NULL && _res[1] == 0x04)
+    {
+      Serial.println(_res[1], HEX);
+      switchToQAMode();
+      break;
+    }
+  }
 }
 
 void COSensor::sendData(char *comm)

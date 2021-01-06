@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <esp_timer.h>
 
 class COSensor {
     private:
@@ -11,7 +12,7 @@ class COSensor {
         char *_res = NULL;
     public:
         COSensor();
-        void init(int txPin, int rxPin, int baudrate, int uart_number);
+        void init(int txPin, int rxPin, int baudrate, int uart_number, int timeout);
         float getConcentration();
         void switchToQAMode();
         ~COSensor();
